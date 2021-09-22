@@ -31,3 +31,5 @@
 extern float segments_per_second;
 
 void inverse_kinematics(const xyz_pos_t &raw);
+
+void home_polargraph();
