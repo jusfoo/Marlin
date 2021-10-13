@@ -506,11 +506,13 @@ void home_if_needed(const bool keeplev=false);
 
     #elif ENABLED(POLARGRAPH)
 
-      const float x1 = rx - (X_MIN_POS), x2 = (X_MAX_POS) - rx, y = ry - (Y_MAX_POS),
-                  a = HYPOT(x1, y), b = HYPOT(x2, y);
+      const float x1 = rx - (X_MIN_POS), 
+                  x2 = (X_MAX_POS) - rx, 
+                  y = ry - (Y_MAX_POS),
+                  a = HYPOT(x1, y),
+                  b = HYPOT(x2, y);
       return a < (POLARGRAPH_MAX_BELT_LEN) + 1
-          && b < (POLARGRAPH_MAX_BELT_LEN) + 1
-          && (a + b) > _MIN(X_BED_SIZE, Y_BED_SIZE);
+          && b < (POLARGRAPH_MAX_BELT_LEN) + 1;
 
     #elif ENABLED(AXEL_TPARA)
 
