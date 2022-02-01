@@ -96,7 +96,7 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_RAMPS_14_EFB
+  #define MOTHERBOARD BOARD_RUMBA
 #endif
 
 /**
@@ -1404,7 +1404,7 @@
 // @section machine
 
 // The size of the printable area.  Must be a whole number.  Cannot be an odd number.
-#define X_BED_SIZE (650+715)
+#define X_BED_SIZE (650+716)
 #define Y_BED_SIZE 2000
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
