@@ -38,13 +38,15 @@
  */
 void GcodeSuite::M280() {
 
-  if (!parser.seen('P')) return;
+  if (!parser.seenval('P')) return;
+
+  TERN_(POLARGRAPH, planner.synchronize());
 
   TERN_(POLARGRAPH, planner.synchronize());
 
   const int servo_index = parser.value_int();
   if (WITHIN(servo_index, 0, NUM_SERVOS - 1)) {
-    if (parser.seen('S')) {
+    if (parser.seenval('S')) {
       const int anew = parser.value_int();
       if (anew >= 0) {
         #if ENABLED(POLARGRAPH)

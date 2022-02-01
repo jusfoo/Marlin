@@ -124,7 +124,7 @@ xyze_pos_t destination; // {0}
       "Offsets for the first hotend must be 0.0."
     );
     // Transpose from [XYZ][HOTENDS] to [HOTENDS][XYZ]
-    HOTEND_LOOP() LOOP_LINEAR_AXES(a) hotend_offset[e][a] = tmp[a][e];
+    HOTEND_LOOP() LOOP_ABC(a) hotend_offset[e][a] = tmp[a][e];
     #if ENABLED(DUAL_X_CARRIAGE)
       hotend_offset[1].x = _MAX(X2_HOME_POS, X2_MAX_POS);
     #endif
@@ -489,7 +489,7 @@ void do_blocking_move_to(LINEAR_AXIS_ARGS(const float), const_feedRate_t fr_mm_s
     const feedRate_t z_feedrate = fr_mm_s ?: homing_feedrate(Z_AXIS);
   #endif
 
-  #if ANY(DELTA, IS_SCARA, POLARGRAPH)
+  #if IS_KINEMATIC
     if (!position_is_reachable(x, y)) return;
     destination = current_position;          // sync destination at the start
   #endif
@@ -603,7 +603,7 @@ void do_blocking_move_to_x(const_float_t rx, const_feedRate_t fr_mm_s/*=0.0*/) {
   }
 #endif
 
-#if LINEAR_AXES >= 4
+#if HAS_I_AXIS
   void do_blocking_move_to_i(const_float_t ri, const_feedRate_t fr_mm_s/*=0.0*/) {
     do_blocking_move_to_xyz_i(current_position, ri, fr_mm_s);
   }
@@ -615,7 +615,7 @@ void do_blocking_move_to_x(const_float_t rx, const_feedRate_t fr_mm_s/*=0.0*/) {
   }
 #endif
 
-#if LINEAR_AXES >= 5
+#if HAS_J_AXIS
   void do_blocking_move_to_j(const_float_t rj, const_feedRate_t fr_mm_s/*=0.0*/) {
     do_blocking_move_to_xyzi_j(current_position, rj, fr_mm_s);
   }
@@ -627,7 +627,7 @@ void do_blocking_move_to_x(const_float_t rx, const_feedRate_t fr_mm_s/*=0.0*/) {
   }
 #endif
 
-#if LINEAR_AXES >= 6
+#if HAS_K_AXIS
   void do_blocking_move_to_k(const_float_t rk, const_feedRate_t fr_mm_s/*=0.0*/) {
     do_blocking_move_to_xyzij_k(current_position, rk, fr_mm_s);
   }
@@ -839,7 +839,7 @@ void restore_feedrate_and_scaling() {
         #endif
       }
     #endif
-    #if LINEAR_AXES >= 4
+    #if HAS_I_AXIS
       if (axis_was_homed(I_AXIS)) {
         #if !HAS_SOFTWARE_ENDSTOPS || ENABLED(MIN_SOFTWARE_ENDSTOP_I)
           NOLESS(target.i, soft_endstop.min.i);
@@ -849,7 +849,7 @@ void restore_feedrate_and_scaling() {
         #endif
       }
     #endif
-    #if LINEAR_AXES >= 5
+    #if HAS_J_AXIS
       if (axis_was_homed(J_AXIS)) {
         #if !HAS_SOFTWARE_ENDSTOPS || ENABLED(MIN_SOFTWARE_ENDSTOP_J)
           NOLESS(target.j, soft_endstop.min.j);
@@ -859,7 +859,7 @@ void restore_feedrate_and_scaling() {
         #endif
       }
     #endif
-    #if LINEAR_AXES >= 6
+    #if HAS_K_AXIS
       if (axis_was_homed(K_AXIS)) {
         #if !HAS_SOFTWARE_ENDSTOPS || ENABLED(MIN_SOFTWARE_ENDSTOP_K)
           NOLESS(target.k, soft_endstop.min.k);
@@ -1193,7 +1193,9 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
         case DXC_MIRRORED_MODE:
         case DXC_DUPLICATION_MODE:
           if (active_extruder == 0) {
+            set_duplication_enabled(false); // Clear stale duplication state
             // Restore planner to parked head (T1) X position
+            float x0_pos = current_position.x;
             xyze_pos_t pos_now = current_position;
             pos_now.x = inactive_extruder_x;
             planner.set_position_mm(pos_now);
@@ -1201,7 +1203,9 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
             // Keep the same X or add the duplication X offset
             xyze_pos_t new_pos = pos_now;
             if (dual_x_carriage_mode == DXC_DUPLICATION_MODE)
-              new_pos.x += duplicate_extruder_x_offset;
+              new_pos.x = x0_pos + duplicate_extruder_x_offset;
+            else
+              new_pos.x = _MIN(X_BED_SIZE - x0_pos, X_MAX_POS);
 
             // Move duplicate extruder into the correct position
             if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Set planner X", inactive_extruder_x, " ... Line to X", new_pos.x);
@@ -1363,7 +1367,7 @@ void prepare_line_to_destination() {
             #if AXIS_HAS_STALLGUARD(X2)
               stealth_states.x2 = tmc_enable_stallguard(stepperX2);
             #endif
-            #if EITHER(CORE_IS_XY, MARKFORGED_XY) && Y_SENSORLESS
+            #if ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX) && Y_SENSORLESS
               stealth_states.y = tmc_enable_stallguard(stepperY);
             #elif CORE_IS_XZ && Z_SENSORLESS
               stealth_states.z = tmc_enable_stallguard(stepperZ);
@@ -1376,7 +1380,7 @@ void prepare_line_to_destination() {
             #if AXIS_HAS_STALLGUARD(Y2)
               stealth_states.y2 = tmc_enable_stallguard(stepperY2);
             #endif
-            #if EITHER(CORE_IS_XY, MARKFORGED_XY) && X_SENSORLESS
+            #if ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX) && X_SENSORLESS
               stealth_states.x = tmc_enable_stallguard(stepperX);
             #elif CORE_IS_YZ && Z_SENSORLESS
               stealth_states.z = tmc_enable_stallguard(stepperZ);
@@ -1413,13 +1417,13 @@ void prepare_line_to_destination() {
           #if HAS_Z_AXIS
             case Z_AXIS: if (ENABLED(Z_SPI_SENSORLESS)) endstops.tmc_spi_homing.z = true; break;
           #endif
-          #if LINEAR_AXES >= 4
+          #if HAS_I_AXIS
             case I_AXIS: if (ENABLED(I_SPI_SENSORLESS)) endstops.tmc_spi_homing.i = true; break;
           #endif
-          #if LINEAR_AXES >= 5
+          #if HAS_J_AXIS
             case J_AXIS: if (ENABLED(J_SPI_SENSORLESS)) endstops.tmc_spi_homing.j = true; break;
           #endif
-          #if LINEAR_AXES >= 6
+          #if HAS_K_AXIS
             case K_AXIS: if (ENABLED(K_SPI_SENSORLESS)) endstops.tmc_spi_homing.k = true; break;
           #endif
           default: break;
@@ -1440,7 +1444,7 @@ void prepare_line_to_destination() {
             #if AXIS_HAS_STALLGUARD(X2)
               tmc_disable_stallguard(stepperX2, enable_stealth.x2);
             #endif
-            #if EITHER(CORE_IS_XY, MARKFORGED_XY) && Y_SENSORLESS
+            #if ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX) && Y_SENSORLESS
               tmc_disable_stallguard(stepperY, enable_stealth.y);
             #elif CORE_IS_XZ && Z_SENSORLESS
               tmc_disable_stallguard(stepperZ, enable_stealth.z);
@@ -1453,7 +1457,7 @@ void prepare_line_to_destination() {
             #if AXIS_HAS_STALLGUARD(Y2)
               tmc_disable_stallguard(stepperY2, enable_stealth.y2);
             #endif
-            #if EITHER(CORE_IS_XY, MARKFORGED_XY) && X_SENSORLESS
+            #if ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX) && X_SENSORLESS
               tmc_disable_stallguard(stepperX, enable_stealth.x);
             #elif CORE_IS_YZ && Z_SENSORLESS
               tmc_disable_stallguard(stepperZ, enable_stealth.z);
@@ -1490,13 +1494,13 @@ void prepare_line_to_destination() {
           #if HAS_Z_AXIS
             case Z_AXIS: if (ENABLED(Z_SPI_SENSORLESS)) endstops.tmc_spi_homing.z = false; break;
           #endif
-          #if LINEAR_AXES >= 4
+          #if HAS_I_AXIS
             case I_AXIS: if (ENABLED(I_SPI_SENSORLESS)) endstops.tmc_spi_homing.i = false; break;
           #endif
-          #if LINEAR_AXES >= 5
+          #if HAS_J_AXIS
             case J_AXIS: if (ENABLED(J_SPI_SENSORLESS)) endstops.tmc_spi_homing.j = false; break;
           #endif
-          #if LINEAR_AXES >= 6
+          #if HAS_K_AXIS
             case K_AXIS: if (ENABLED(K_SPI_SENSORLESS)) endstops.tmc_spi_homing.k = false; break;
           #endif
           default: break;
@@ -1682,7 +1686,7 @@ void prepare_line_to_destination() {
       int16_t phaseDelta = (home_phase[axis] - phaseCurrent) * stepperBackoutDir;
 
       // Check if home distance within endstop assumed repeatability noise of .05mm and warn.
-      if (ABS(phaseDelta) * planner.steps_to_mm[axis] / phasePerUStep < 0.05f)
+      if (ABS(phaseDelta) * planner.mm_per_step[axis] / phasePerUStep < 0.05f)
         SERIAL_ECHOLNPGM("Selected home phase ", home_phase[axis],
                          " too close to endstop trigger phase ", phaseCurrent,
                          ". Pick a different phase for ", AS_CHAR(AXIS_CHAR(axis)));
@@ -1691,7 +1695,7 @@ void prepare_line_to_destination() {
       if (phaseDelta < 0) phaseDelta += 1024;
 
       // Convert TMC µsteps(phase) to whole Marlin µsteps to effector backout direction to mm
-      const float mmDelta = int16_t(phaseDelta / phasePerUStep) * effectorBackoutDir * planner.steps_to_mm[axis];
+      const float mmDelta = int16_t(phaseDelta / phasePerUStep) * effectorBackoutDir * planner.mm_per_step[axis];
 
       // Optional debug messages
       if (DEBUGGING(LEVELING)) {
@@ -1799,8 +1803,8 @@ void prepare_line_to_destination() {
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Home Fast: ", move_length, "mm");
     do_homing_move(axis, move_length, 0.0, !use_probe_bump);
 
-    #if BOTH(HOMING_Z_WITH_PROBE, BLTOUCH_SLOW_MODE)
-      if (axis == Z_AXIS) bltouch.stow(); // Intermediate STOW (in LOW SPEED MODE)
+    #if BOTH(HOMING_Z_WITH_PROBE, BLTOUCH)
+      if (axis == Z_AXIS && !bltouch.high_speed_mode) bltouch.stow(); // Intermediate STOW (in LOW SPEED MODE)
     #endif
 
     // If a second homing move is configured...
@@ -1817,24 +1821,25 @@ void prepare_line_to_destination() {
           case X_AXIS: es = X_ENDSTOP; break;
           case Y_AXIS: es = Y_ENDSTOP; break;
           case Z_AXIS: es = Z_ENDSTOP; break;
-          #if LINEAR_AXES >= 4
+          #if HAS_I_AXIS
             case I_AXIS: es = I_ENDSTOP; break;
           #endif
-          #if LINEAR_AXES >= 5
+          #if HAS_J_AXIS
             case J_AXIS: es = J_ENDSTOP; break;
           #endif
-          #if LINEAR_AXES >= 6
+          #if HAS_K_AXIS
             case K_AXIS: es = K_ENDSTOP; break;
           #endif
         }
         if (TEST(endstops.state(), es)) {
           SERIAL_ECHO_MSG("Bad ", AS_CHAR(AXIS_CHAR(axis)), " Endstop?");
-          kill(GET_TEXT(MSG_KILL_HOMING_FAILED));
+          kill(GET_TEXT_F(MSG_KILL_HOMING_FAILED));
         }
       #endif
 
-      #if BOTH(HOMING_Z_WITH_PROBE, BLTOUCH_SLOW_MODE)
-        if (axis == Z_AXIS && bltouch.deploy()) return; // Intermediate DEPLOY (in LOW SPEED MODE)
+      #if BOTH(HOMING_Z_WITH_PROBE, BLTOUCH)
+        if (axis == Z_AXIS && !bltouch.high_speed_mode && bltouch.deploy())
+          return; // Intermediate DEPLOY (in LOW SPEED MODE)
       #endif
 
       // Slow move towards endstop until triggered
@@ -1999,7 +2004,7 @@ void prepare_line_to_destination() {
       // Delta homing treats the axes as normal linear axes.
 
       const float adjDistance = delta_endstop_adj[axis],
-                  minDistance = (MIN_STEPS_PER_SEGMENT) * planner.steps_to_mm[axis];
+                  minDistance = (MIN_STEPS_PER_SEGMENT) * planner.mm_per_step[axis];
 
       // Retrace by the amount specified in delta_endstop_adj if more than min steps.
       if (adjDistance * (Z_HOME_DIR) < 0 && ABS(adjDistance) > minDistance) { // away from endstop, more than min distance
@@ -2007,7 +2012,7 @@ void prepare_line_to_destination() {
         do_homing_move(axis, adjDistance, get_homing_bump_feedrate(axis));
       }
 
-    #else // CARTESIAN / CORE / MARKFORGED_XY
+    #else // CARTESIAN / CORE / MARKFORGED_XY / MARKFORGED_YX
 
       set_axis_is_at_home(axis);
       sync_plan_position();
@@ -2037,7 +2042,7 @@ void prepare_line_to_destination() {
         #if ENABLED(SENSORLESS_HOMING)
           planner.synchronize();
           if (false
-            #if EITHER(IS_CORE, MARKFORGED_XY)
+            #if ANY(IS_CORE, MARKFORGED_XY, MARKFORGED_YX)
               || axis != NORMAL_AXIS
             #endif
           ) safe_delay(200);  // Short delay to allow belts to spring back

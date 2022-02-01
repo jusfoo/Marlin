@@ -48,8 +48,8 @@
 // cz         Czech
 // da         Danish
 // de         German
-// el         Greek
-// el_gr      Greek (Greece)
+// el         Greek (Greece)
+// el_CY      Greek (Cyprus)
 // en         English
 // es         Spanish
 // eu         Basque-Euskera
@@ -140,6 +140,7 @@
 #define STR_RESEND                          "Resend: "
 #define STR_UNKNOWN_COMMAND                 "Unknown command: \""
 #define STR_ACTIVE_EXTRUDER                 "Active Extruder: "
+#define STR_ERR_FANSPEED                    "Fan speed E"
 
 #define STR_PROBE_OFFSET                    "Probe Offset"
 #define STR_SKEW_MIN                        "min_skew_factor: "
@@ -165,6 +166,7 @@
 #define STR_SAVED_POS                       "Position saved"
 #define STR_RESTORING_POS                   "Restoring position"
 #define STR_INVALID_POS_SLOT                "Invalid slot. Total: "
+#define STR_DONE                            "Done."
 
 #define STR_SD_CANT_OPEN_SUBDIR             "Cannot open subdir "
 #define STR_SD_INIT_FAIL                    "No SD card"
@@ -238,6 +240,7 @@
 #define STR_REDUNDANCY                      "Heater switched off. Temperature difference between temp sensors is too high !"
 #define STR_T_HEATING_FAILED                "Heating failed"
 #define STR_T_THERMAL_RUNAWAY               "Thermal Runaway"
+#define STR_T_MALFUNCTION                   "Thermal Malfunction"
 #define STR_T_MAXTEMP                       "MAXTEMP triggered"
 #define STR_T_MINTEMP                       "MINTEMP triggered"
 #define STR_ERR_PROBING_FAILED              "Probing Failed"
@@ -263,9 +266,10 @@
 // Settings Report Strings
 #define STR_Z_AUTO_ALIGN                    "Z Auto-Align"
 #define STR_BACKLASH_COMPENSATION           "Backlash compensation"
-#define STR_DELTA_SETTINGS                  "Delta settings (L<diagonal-rod> R<radius> H<height> S<segments-per-sec> XYZ<tower-angle-trim> ABC<rod-trim>)"
-#define STR_SCARA_SETTINGS                  "SCARA settings"
-#define STR_SCARA_S                         "S<seg-per-sec>"
+#define STR_S_SEG_PER_SEC                   "S<seg-per-sec>"
+#define STR_DELTA_SETTINGS                  "Delta (L<diagonal-rod> R<radius> H<height> S<seg-per-sec> XYZ<tower-angle-trim> ABC<rod-trim>)"
+#define STR_SCARA_SETTINGS                  "SCARA"
+#define STR_POLARGRAPH_SETTINGS             "Polargraph"
 #define STR_SCARA_P_T_Z                     "P<theta-psi-offset> T<theta-offset> Z<home-offset>"
 #define STR_ENDSTOP_ADJUSTMENT              "Endstop adjustment"
 #define STR_SKEW_FACTOR                     "Skew Factor"
@@ -365,7 +369,7 @@
 #define LCD_STR_E STR_E
 
 // Extra Axis and Endstop Names
-#if LINEAR_AXES >= 4
+#if HAS_I_AXIS
   #if AXIS4_NAME == 'A'
     #define AXIS4_STR "A"
     #define STR_I_MIN "a_min"
@@ -399,7 +403,7 @@
   #define AXIS4_STR   ""
 #endif
 
-#if LINEAR_AXES >= 5
+#if HAS_J_AXIS
   #if AXIS5_NAME == 'A'
     #define AXIS5_STR "A"
     #define STR_J_MIN "a_min"
@@ -433,7 +437,7 @@
   #define AXIS5_STR   ""
 #endif
 
-#if LINEAR_AXES >= 6
+#if HAS_K_AXIS
   #if AXIS6_NAME == 'A'
     #define AXIS6_STR "A"
     #define STR_K_MIN "a_min"
