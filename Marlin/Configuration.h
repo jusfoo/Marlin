@@ -774,7 +774,7 @@
 // Enable for Polargraph Kinematics
 #define POLARGRAPH
 #if ENABLED(POLARGRAPH)
-  #define POLARGRAPH_MAX_BELT_LEN 1035.0
+  #define POLARGRAPH_MAX_BELT_LEN 2035.0
   #define POLAR_SEGMENTS_PER_SECOND 5
 
   #define X_MIN_PIN       35  // AUX4_10_PIN
@@ -1404,8 +1404,8 @@
 // @section machine
 
 // The size of the printable area.  Must be a whole number.  Cannot be an odd number.
-#define X_BED_SIZE 650
-#define Y_BED_SIZE 1000
+#define X_BED_SIZE (650+715)
+#define Y_BED_SIZE 2000
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS (-X_BED_SIZE/2)
@@ -1761,7 +1761,7 @@
 // MANUAL_X_HOME_POS must be within the range X_MAX_POS...X_MIN_POS.
 #define MANUAL_X_HOME_POS 0
 // MANUAL_Y_HOME_POS must be within the range Y_MAX_POS...Y_MIN_POS.
-#define MANUAL_Y_HOME_POS -482.65 //(Y_MAX_POS-( sqrt(sq(POLARGRAPH_MAX_BELT_LEN)-sq(X_BED_SIZE/2))))
+#define MANUAL_Y_HOME_POS -917.14 //(Y_MAX_POS-( sqrt(sq(POLARGRAPH_MAX_BELT_LEN)-sq(X_BED_SIZE/2))))
 //#define MANUAL_Z_HOME_POS 0
 //#define MANUAL_I_HOME_POS 0
 //#define MANUAL_J_HOME_POS 0
