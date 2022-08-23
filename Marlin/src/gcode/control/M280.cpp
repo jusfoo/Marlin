@@ -54,7 +54,7 @@ void GcodeSuite::M280() {
             millis_t now = millis();
             const millis_t start = now, end = start + t;
             while (PENDING(now, end)) {
-              safe_delay(50);
+              safe_delay(SERVO_T_DELAY_STEP_SIZE);
               now = _MIN(millis(), end);
               servo[servo_index].move(LROUND(aold + (anew - aold) * (float(now - start) / t)));
             }

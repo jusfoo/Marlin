@@ -3156,6 +3156,11 @@
 // If the servo can't reach the requested position, increase it.
 #define SERVO_DELAY { 300 }
 
+// when using `M280 Saaa Tbbb` moves servo to angle aaa in bbb milliseconds.  to interpolate through 
+// that timeframe take steps no smaller than SERVO_T_DELAY_STEP_SIZE ms.  Raising this value can
+// sometimes help with servo jitter.
+#define SERVO_T_DELAY_STEP_SIZE 100
+
 // Only power servos during movement, otherwise leave off to prevent jitter
 //#define DEACTIVATE_SERVOS_AFTER_MOVE
 
