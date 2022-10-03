@@ -833,6 +833,11 @@
 #if ENABLED(POLARGRAPH)
   #define POLARGRAPH_MAX_BELT_LEN 1035.0
   #define POLAR_SEGMENTS_PER_SECOND 5
+
+  #if MOTHERBOARD == BOARD_RUMBA
+    #define X_MAX_PIN                           37
+    #define Y_MAX_PIN                           36
+  #endif
 #endif
 
 // Enable for DELTA kinematics and configure below
