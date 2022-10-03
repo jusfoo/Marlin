@@ -97,7 +97,7 @@
 
     endstops.validate_homing_move();
 
-    current_position.set(0.0, 0.0);
+    current_position.set(X_HOME_POS, Y_HOME_POS);
 
     #if ENABLED(SENSORLESS_HOMING) && DISABLED(ENDSTOPS_ALWAYS_ON_DEFAULT)
       TERN_(X_SENSORLESS, tmc_disable_stallguard(stepperX, stealth_states.x));

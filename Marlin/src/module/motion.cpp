@@ -330,6 +330,7 @@ void report_current_position_projected() {
                    y = ry - (draw_area_max.y),
                    a = HYPOT(d1, y),
                    b = HYPOT(d2, y);
+      //SERIAL_ECHOLNPGM("d1=",d1," d2=",d2," y=",y," a=",a," b=",b);
 
       can_reach = (
            a < polargraph_max_belt_len + 1
@@ -854,11 +855,18 @@ void restore_feedrate_and_scaling() {
         constexpr xy_pos_t offs{0};
       #endif
 
-      if (TERN1(IS_SCARA, axis_was_homed(X_AXIS) && axis_was_homed(Y_AXIS))) {
+      #if IS_SCARA
+      if (axis_was_homed(X_AXIS) && axis_was_homed(Y_AXIS)) {
         const float dist_2 = HYPOT2(target.x - offs.x, target.y - offs.y);
         if (dist_2 > delta_max_radius_2)
           target *= float(delta_max_radius / SQRT(dist_2)); // 200 / 300 = 0.66
       }
+      #elif ENABLED(POLARGRAPH)
+        if(target.x<X_MIN_POS) target.x = X_MIN_POS;
+        if(target.x>X_MAX_POS) target.x = X_MAX_POS;
+        if(target.y<Y_MIN_POS) target.y = Y_MIN_POS;
+        if(target.y>Y_MAX_POS) target.y = Y_MAX_POS;
+      #endif
 
     #else
 
@@ -978,6 +986,8 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
     const float scaled_fr_mm_s = MMS_SCALED(feedrate_mm_s);
 
     const xyze_float_t diff = destination - current_position;
+
+    //SERIAL_ECHOLNPGM("scaled_fr_mm_s=",scaled_fr_mm_s,"\tTO=",destination.x,",",destination.y,"\tFROM=",current_position.x,",",current_position.y);
 
     // If the move is only in Z/E don't split up the move
     if (!diff.x && !diff.y) {
@@ -2064,7 +2074,6 @@ void prepare_line_to_destination() {
         if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("adjDistance:", adjDistance);
         do_homing_move(axis, adjDistance, get_homing_bump_feedrate(axis));
       }
-
     #else // CARTESIAN / CORE / MARKFORGED_XY / MARKFORGED_YX
 
       set_axis_is_at_home(axis);
