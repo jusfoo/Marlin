@@ -50,7 +50,7 @@ void inverse_kinematics(const xyz_pos_t &raw) {
   const float x1 = raw.x - (draw_area_min.x), 
               x2 = (draw_area_max.x) - raw.x, 
               y = raw.y - (draw_area_max.y);
-  SERIAL_ECHOLNPGM("x1=",x1," x2=",x2," y=",y," xmin=",draw_area_min.x," xmax=",draw_area_max.x," ymax=",draw_area_max.y);
+  //SERIAL_ECHOLNPGM("x1=",x1," x2=",x2," y=",y," xmin=",draw_area_min.x," xmax=",draw_area_max.x," ymax=",draw_area_max.y);
   delta.set(HYPOT(x1, y), HYPOT(x2, y), raw.z);
 }
 
