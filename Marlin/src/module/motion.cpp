@@ -561,8 +561,8 @@ void do_blocking_move_to(NUM_AXIS_ARGS(const float), const_feedRate_t fr_mm_s/*=
     const feedRate_t w_feedrate = fr_mm_s ?: homing_feedrate(W_AXIS)
   );
 
-  #if IS_KINEMATIC && !ENABLED(POLARGRAPH)
-    // kinematic machines are expected to home to a point 1.5x their range?  never reachable.
+  #if IS_KINEMATIC && DISABLED(POLARGRAPH)
+    // kinematic machines are expected to home to a point 1.5x their range? never reachable.
     if (!position_is_reachable(x, y)) return;
     destination = current_position;          // sync destination at the start
   #endif
@@ -911,19 +911,17 @@ void restore_feedrate_and_scaling() {
 
       if (TERN0(DELTA, !all_axes_homed())) return;
 
-      #if BOTH(HAS_HOTEND_OFFSET, DELTA)
-        // The effector center position will be the target minus the hotend offset.
-        const xy_pos_t offs = hotend_offset[active_extruder];
-      #else
-        // SCARA needs to consider the angle of the arm through the entire move, so for now use no tool offset.
-        constexpr xy_pos_t offs{0};
-      #endif
+        #if BOTH(HAS_HOTEND_OFFSET, DELTA)
+          // The effector center position will be the target minus the hotend offset.
+          const xy_pos_t offs = hotend_offset[active_extruder];
+        #else
+          // SCARA needs to consider the angle of the arm through the entire move, so for now use no tool offset.
+          constexpr xy_pos_t offs{0};
+        #endif
 
       #if ENABLED(POLARGRAPH)
-        target.x = _MIN(target.x, draw_area_max.x);
-        target.x = _MAX(target.x, draw_area_min.x);
-        target.y = _MIN(target.y, draw_area_max.y);
-        target.y = _MAX(target.y, draw_area_min.y);
+        LIMIT(target.x, draw_area_min.x, draw_area_max.x);
+        LIMIT(target.y, draw_area_min.y, draw_area_max.y);
       #else
         if (TERN1(IS_SCARA, axis_was_homed(X_AXIS) && axis_was_homed(Y_AXIS))) {
           const float dist_2 = HYPOT2(target.x - offs.x, target.y - offs.y);
