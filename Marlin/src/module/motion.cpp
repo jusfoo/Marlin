@@ -911,17 +911,13 @@ void restore_feedrate_and_scaling() {
 
       if (TERN0(DELTA, !all_axes_homed())) return;
 
-      #if ENABLED(POLARGRAPH)
-        LIMIT(target.x, draw_area_min.x, draw_area_max.x);
-        LIMIT(target.y, draw_area_min.y, draw_area_max.y);
-      #else
-        #if BOTH(HAS_HOTEND_OFFSET, DELTA)
-          // The effector center position will be the target minus the hotend offset.
-          const xy_pos_t offs = hotend_offset[active_extruder];
-        #else
-          // SCARA needs to consider the angle of the arm through the entire move, so for now use no tool offset.
-          constexpr xy_pos_t offs{0};
-        #endif
+      #if BOTH(HAS_HOTEND_OFFSET, DELTA)
+        // The effector center position will be the target minus the hotend offset.
+        const xy_pos_t offs = hotend_offset[active_extruder];
+      #elif DISABLED(POLARGRAPH)
+        // SCARA needs to consider the angle of the arm through the entire move, so for now use no tool offset.
+        constexpr xy_pos_t offs{0};
+      #endif
 
       #if ENABLED(POLARGRAPH)
         LIMIT(target.x, draw_area_min.x, draw_area_max.x);
