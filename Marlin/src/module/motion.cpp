@@ -911,10 +911,6 @@ void restore_feedrate_and_scaling() {
 
       if (TERN0(DELTA, !all_axes_homed())) return;
 
-      #if ENABLED(POLARGRAPH)
-        LIMIT(target.x, draw_area_min.x, draw_area_max.x);
-        LIMIT(target.y, draw_area_min.y, draw_area_max.y);
-      #else
         #if BOTH(HAS_HOTEND_OFFSET, DELTA)
           // The effector center position will be the target minus the hotend offset.
           const xy_pos_t offs = hotend_offset[active_extruder];
