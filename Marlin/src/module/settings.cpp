@@ -319,7 +319,7 @@ typedef struct SettingsDataStruct {
   #endif
 
   //
-  // Kinematic Settings
+  // Kinematic Settings (Delta, SCARA, TPARA, Polargraph...)
   //
   #if IS_KINEMATIC
     float segments_per_second;                          // M665 S
@@ -992,7 +992,7 @@ void MarlinSettings::postprocess() {
     }
 
     //
-    // Kinematic Settings
+    // Kinematic Settings (Delta, SCARA, TPARA, Polargraph...)
     //
     #if IS_KINEMATIC
     {
@@ -1940,7 +1940,7 @@ void MarlinSettings::postprocess() {
       }
 
       //
-      // Kinematic Segments-per-second
+      // Kinematic Settings (Delta, SCARA, TPARA, Polargraph...)
       //
       #if IS_KINEMATIC
       {
@@ -3001,7 +3001,7 @@ void MarlinSettings::reset() {
   #endif
 
   //
-  // Kinematic settings
+  // Kinematic Settings (Delta, SCARA, TPARA, Polargraph...)
   //
 
   #if IS_KINEMATIC
