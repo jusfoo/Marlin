@@ -1445,14 +1445,6 @@ void MarlinSettings::postprocess() {
     EEPROM_WRITE(planner.skew_factor);
 
     //
-    // POLARGRAPH
-    //
-    #if ENABLED(POLARGRAPH)
-      _FIELD_TEST(polargraph_max_belt_len);
-      EEPROM_WRITE(polargraph_max_belt_len);
-    #endif
-
-    //
     // Advanced Pause filament load & unload lengths
     //
     #if HAS_EXTRUDERS
