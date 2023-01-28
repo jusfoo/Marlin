@@ -357,6 +357,14 @@ void menu_motion() {
   #endif
 
   //
+  // Pen up/down menu
+  //
+  #if ENABLED(PEN_UP_DOWN_MENU)
+    GCODES_ITEM(MSG_MANUAL_PENUP, F("M280 P0 S90"));
+    GCODES_ITEM(MSG_MANUAL_PENDOWN, F("M280 P0 S50"));
+  #endif
+
+  //
   // Assisted Bed Tramming
   //
   #if ENABLED(ASSISTED_TRAMMING_WIZARD)
