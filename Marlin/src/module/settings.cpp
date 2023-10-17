@@ -340,7 +340,7 @@ typedef struct SettingsDataStruct {
                   delta_diagonal_rod_trim;              // M665 A B C
     #elif ENABLED(POLARGRAPH)
       xy_pos_t draw_area_min, draw_area_max;            // M665 L R T B
-      float polargraph_max_belt_len;                    // M665 H
+      float hypoteneuse_length_at_home_position;                    // M665 H
     #endif
 
   #endif
@@ -1041,7 +1041,7 @@ void MarlinSettings::postprocess() {
         _FIELD_TEST(draw_area_min);
         EEPROM_WRITE(draw_area_min);             // 2 floats
         EEPROM_WRITE(draw_area_max);             // 2 floats
-        EEPROM_WRITE(polargraph_max_belt_len);   // 1 float
+        EEPROM_WRITE(hypoteneuse_length_at_home_position);   // 1 float
       #endif
     }
     #endif
@@ -2005,7 +2005,7 @@ void MarlinSettings::postprocess() {
           _FIELD_TEST(draw_area_min);
           EEPROM_READ(draw_area_min);             // 2 floats
           EEPROM_READ(draw_area_max);             // 2 floats
-          EEPROM_READ(polargraph_max_belt_len);   // 1 float
+          EEPROM_READ(hypoteneuse_length_at_home_position);   // 1 float
         #endif
       }
       #endif
@@ -3096,7 +3096,7 @@ void MarlinSettings::reset() {
     #elif ENABLED(POLARGRAPH)
       draw_area_min.set(X_MIN_POS, Y_MIN_POS);
       draw_area_max.set(X_MAX_POS, Y_MAX_POS);
-      polargraph_max_belt_len = POLARGRAPH_MAX_BELT_LEN;
+      hypoteneuse_length_at_home_position = HYPOTENEUSE_LENGTH_AT_HOME_POSITION;
     #endif
   #endif
 
