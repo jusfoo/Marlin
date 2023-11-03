@@ -60,11 +60,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-<<<<<<< Updated upstream
-#define STRING_CONFIG_H_AUTHOR "(Marginally Clever, Makelangelo 5)" // Who made the changes.
-=======
 #define STRING_CONFIG_H_AUTHOR "(Marginally Clever, Sixi3 config)" // Who made the changes.
->>>>>>> Stashed changes
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -187,18 +183,12 @@
 //#define Z2_DRIVER_TYPE A4988
 //#define Z3_DRIVER_TYPE A4988
 //#define Z4_DRIVER_TYPE A4988
-<<<<<<< Updated upstream
-//#define I_DRIVER_TYPE  A4988
-//#define J_DRIVER_TYPE  A4988
-//#define K_DRIVER_TYPE  A4988
-=======
 #define I_DRIVER_TYPE  A4988
 #define J_DRIVER_TYPE  A4988
 #define K_DRIVER_TYPE  A4988
 //#define U_DRIVER_TYPE  A4988
 //#define V_DRIVER_TYPE  A4988
 //#define W_DRIVER_TYPE  A4988
->>>>>>> Stashed changes
 //#define E0_DRIVER_TYPE A4988
 //#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
@@ -223,15 +213,6 @@
  * Regardless of these settings the axes are internally named I, J, K.
  */
 #ifdef I_DRIVER_TYPE
-<<<<<<< Updated upstream
-  #define AXIS4_NAME 'A' // :['A', 'B', 'C', 'U', 'V', 'W']
-#endif
-#ifdef J_DRIVER_TYPE
-  #define AXIS5_NAME 'B' // :['B', 'C', 'U', 'V', 'W']
-#endif
-#ifdef K_DRIVER_TYPE
-  #define AXIS6_NAME 'C' // :['C', 'U', 'V', 'W']
-=======
   #define AXIS4_NAME 'U' // :['A', 'B', 'C', 'U', 'V', 'W']
   #define AXIS4_ROTATES
 #endif
@@ -254,7 +235,6 @@
 #ifdef W_DRIVER_TYPE
   #define AXIS9_NAME 'W' // :['W']
   //#define AXIS9_ROTATES
->>>>>>> Stashed changes
 #endif
 
 // @section extruder
@@ -1034,17 +1014,6 @@
 // Specify here all the endstop connectors that are connected to any endstop or probe.
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
-<<<<<<< Updated upstream
-//#define USE_XMIN_PLUG
-//#define USE_YMIN_PLUG
-//#define USE_ZMIN_PLUG
-//#define USE_IMIN_PLUG
-//#define USE_JMIN_PLUG
-//#define USE_KMIN_PLUG
-#define USE_XMAX_PLUG
-#define USE_YMAX_PLUG
-#define USE_ZMAX_PLUG
-=======
 #define USE_XMIN_PLUG
 #define USE_YMIN_PLUG
 #define USE_ZMIN_PLUG
@@ -1057,7 +1026,6 @@
 //#define USE_XMAX_PLUG
 //#define USE_YMAX_PLUG
 //#define USE_ZMAX_PLUG
->>>>>>> Stashed changes
 //#define USE_IMAX_PLUG
 //#define USE_JMAX_PLUG
 //#define USE_KMAX_PLUG
@@ -1161,22 +1129,14 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-<<<<<<< Updated upstream
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 80 }
-=======
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 105, 105, 105, 105, 105, 105 }
->>>>>>> Stashed changes
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-<<<<<<< Updated upstream
-#define DEFAULT_MAX_FEEDRATE          { 90*60, 90*60, 90*60 }
-=======
 #define DEFAULT_MAX_FEEDRATE          { 5,5,5,5,5,5 }
->>>>>>> Stashed changes
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1189,11 +1149,7 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-<<<<<<< Updated upstream
-#define DEFAULT_MAX_ACCELERATION      { 40*60, 40*60, 40*60 }
-=======
 #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 3000, 3000, 3000, 3000 }
->>>>>>> Stashed changes
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1591,36 +1547,25 @@
 #define Y_ENABLE_ON 0
 #define Z_ENABLE_ON 0
 #define E_ENABLE_ON 0 // For all extruders
-<<<<<<< Updated upstream
-//#define I_ENABLE_ON 0
-//#define J_ENABLE_ON 0
-//#define K_ENABLE_ON 0
-=======
+
 #define I_ENABLE_ON 0
 #define J_ENABLE_ON 0
 #define K_ENABLE_ON 0
 //#define U_ENABLE_ON 0
 //#define V_ENABLE_ON 0
 //#define W_ENABLE_ON 0
->>>>>>> Stashed changes
 
 // Disable axis steppers immediately when they're not being stepped.
 // WARNING: When motors turn off there is a chance of losing position accuracy!
 #define DISABLE_X false
 #define DISABLE_Y false
 #define DISABLE_Z false
-<<<<<<< Updated upstream
-//#define DISABLE_I false
-//#define DISABLE_J false
-//#define DISABLE_K false
-=======
 #define DISABLE_I false
 #define DISABLE_J false
 #define DISABLE_K false
 //#define DISABLE_U false
 //#define DISABLE_V false
 //#define DISABLE_W false
->>>>>>> Stashed changes
 
 // Turn off the display blinking that warns about possible accuracy reduction
 //#define DISABLE_REDUCED_ACCURACY_WARNING
@@ -1633,14 +1578,6 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-<<<<<<< Updated upstream
-#define INVERT_X_DIR true
-#define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
-//#define INVERT_I_DIR false
-//#define INVERT_J_DIR false
-//#define INVERT_K_DIR false
-=======
 #define INVERT_X_DIR false
 #define INVERT_Y_DIR false
 #define INVERT_Z_DIR false
@@ -1650,7 +1587,6 @@
 //#define INVERT_U_DIR false
 //#define INVERT_V_DIR false
 //#define INVERT_W_DIR false
->>>>>>> Stashed changes
 
 // @section extruder
 
@@ -1683,14 +1619,6 @@
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-<<<<<<< Updated upstream
-#define X_HOME_DIR 1
-#define Y_HOME_DIR 1
-#define Z_HOME_DIR 1
-//#define I_HOME_DIR -1
-//#define J_HOME_DIR -1
-//#define K_HOME_DIR -1
-=======
 #define X_HOME_DIR -1
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
@@ -1700,29 +1628,9 @@
 //#define U_HOME_DIR -1
 //#define V_HOME_DIR -1
 //#define W_HOME_DIR -1
->>>>>>> Stashed changes
 
 // @section machine
 
-<<<<<<< Updated upstream
-// The size of the printable area.  Must be a whole number.  Cannot be an odd number.
-#define X_BED_SIZE 650
-#define Y_BED_SIZE 1000
-
-// Travel limits (mm) after homing, corresponding to endstop positions.
-#define X_MIN_POS (-X_BED_SIZE/2)
-#define Y_MIN_POS (-Y_BED_SIZE/2)
-#define Z_MIN_POS 0
-#define X_MAX_POS (X_BED_SIZE/2)
-#define Y_MAX_POS (Y_BED_SIZE/2)
-#define Z_MAX_POS 0
-//#define I_MIN_POS 0
-//#define I_MAX_POS 50
-//#define J_MIN_POS 0
-//#define J_MAX_POS 50
-//#define K_MIN_POS 0
-//#define K_MAX_POS 50
-=======
 // The size of the printable area
 #define X_BED_SIZE 360
 #define Y_BED_SIZE 360
@@ -1746,7 +1654,6 @@
 //#define V_MAX_POS 50
 //#define W_MIN_POS 0
 //#define W_MAX_POS 50
->>>>>>> Stashed changes
 
 /**
  * Software Endstops
@@ -2108,13 +2015,8 @@
   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
 #endif
 
-<<<<<<< Updated upstream
-// Homing speeds (mm/min)
-#define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (4*60) }
-=======
 // Homing speeds (linear=mm/min, rotational=°/min)
 #define HOMING_FEEDRATE_MM_M { (4*60), (4*60), (4*60), (4*60), (4*60), (4*60) }
->>>>>>> Stashed changes
 
 // Validate that endstops are triggered on homing moves
 //#define VALIDATE_HOMING_ENDSTOPS
